@@ -51,6 +51,7 @@ largeList([_|Lista], P) :- largeList(Lista, P1), P is P1 + 1.
 cutList(Lista, Num, R) :- var(Num), rotate(Lista, 0, R), !.
 cutList(Lista, Num, R) :- largeList(Lista, P1), P1 = Num, rotate(Lista, 0, R), !.
 cutList(Lista, Num, R) :- largeList(Lista, P1), P2 is P1 - (Num + 1), sublistaAux(Lista, P2, R).
+cardsSetDeleteCard(Lista, Num, R) :- largeList(Lista, P1), (P1 - 1) >= Num, sublistaAux(Lista, Num, R).
 
 % Función 
 cardsSet(ListaElementos, NumE, MaxC, Seed, CS) :- 
@@ -60,8 +61,13 @@ cardsSet(ListaElementos, NumE, MaxC, Seed, CS) :-
   cutList(RotateR, MaxC, CSi),
   append(CSi, [ListaElementos], CS).
 
-
-
+% cardsSetFindTotalCards
+cardsSetFindTotalCards(CS, TC) :- getfirstCard(CS, FC), largeList(FC, P), TC is (P * P) + P + 1.
 % Buscar Pertenece
 % set_prolog_flag(answer_write_options,[max_depth(0)]).
-cardsSetMissingCards(CS2, CS3):- getfirstCard(CS2, C), finalCard(CS2, FC), largeList(C, Result), cardsSet(FC, Result, _, 5, CS3).
+cardsSetMissingCards(CS2, CS3):- 
+  getfirstCard(CS2, C), 
+  finalCard(CS2, FC), 
+  largeList(C, Result), 
+  cardsSet(FC, Result, _, 5, NCS), 
+  subtract(NCS, CS2, CS3).
