@@ -74,6 +74,9 @@ cardsSetMissingCards(CS2, CS3):-
 
 
 cardsSetToString(CS, R) :- cardsAux(CS, 1, '', R).
-cardsAux([_],_,Cadena,R):- string_concat(Cadena, '', R).
+cardsAux([_],_,Cadena,R):- string_concat(Cadena, '', R), !.
 cardsAux([X|Xs], Num, Cadena, R) :- number_string(Num, Number), string_concat(Number, ': ', X1), string_concat("Tarjeta ", X1, X2), Num2 is Num + 1, atomic_list_concat(X, ', ', X3), string_concat(X2, X3, X4), 
   string_concat(X4, '\n', X5), string_concat(Cadena, X5, Re), cardsAux(Xs, Num2, Re, R).
+
+
+dobbleGame(NumP, CS, GameMode, Seed, [NumP, [], GameMode, Seed, CS, []]).
