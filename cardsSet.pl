@@ -79,4 +79,19 @@ cardsAux([X|Xs], Num, Cadena, R) :- number_string(Num, Number), string_concat(Nu
   string_concat(X4, '\n', X5), string_concat(Cadena, X5, Re), cardsAux(Xs, Num2, Re, R).
 
 
-dobbleGame(NumP, CS, GameMode, Seed, [NumP, [], GameMode, Seed, CS, []]).
+dobbleGame(NumP, CS, GameMode, Seed, [NumP, [], GameMode, Seed, "Jugando", CS, []]).
+
+createUser(UserName, [UserName, []]).
+dobbleGameRegister(User, [Gin,X|Xs], Gout) :- createUser(User, UserOut), not(member(UserOut, X)), append(X, [UserOut], X1), rotate([Gin,X1|Xs], 0, Gout), !.
+
+dobbleGameWhoseTurnIsIt(Gin, User):- cardsSetNthCard(Gin, 1, G1), cardsSetNthCard(G1, 0, G2), cardsSetNthCard(G2, 0, User).
+
+dobbleGameStatus(Gin, Status):- cardsSetNthCard(Gin, 4, Status).
+
+dobbleGameScoreAux([User|_], User1, R):- cardsSetNthCard(User, 0, UserName), atom_string(UserName, User2), User1 == User2, cardsSetNthCard(User, 1, Score), largeList(Score, R1), R is R1 div 2, !.
+dobbleGameScoreAux(Players, User, R):- rotate(Players, 1, R1), dobbleGameScoreAux(R1, User, R).
+dobbleGameScore(Gin, User, Score):- cardsSetNthCard(Gin, 1, X), dobbleGameScoreAux(X, User, Score).
+
+dGTS()
+
+dobbleGameToString(G, Str):-
