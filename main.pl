@@ -173,7 +173,7 @@ dobbleGameScoreAux(Players, User, R):- rotate(Players, 1, R1), dobbleGameScoreAu
 % Descripción: Predicado que permite realizar una acción a partir de una acción especificada en el segundo argumento
 dobbleGamePlay(Gin, Action, Gout):- cardsSetNthCard(Gin, 4, Status), Status \= 'Terminado', Action = null, null(Gin, Gout), !.
 dobbleGamePlay(Gin, Action, Gout):- cardsSetNthCard(Gin, 4, Status), Status \= 'Terminado', Action = [pass], pass(Gin, Gout), !.
-dobbleGamePlay(Gin, Action, Gout):- cardsSetNthCard(Gin, 4, Status), Status \= 'Terminado', Action = [finish], finish(Gin, Gout, R), write(R), !.
+dobbleGamePlay(Gin, Action, Gout):- cardsSetNthCard(Gin, 4, Status), Status \= 'Terminado', Action = [finish], finish(Gin, Gout).
 dobbleGamePlay(Gin, Action, Gout):- cardsSetNthCard(Gin, 4, Status), Status \= 'Terminado', is_list(Action),
   cardsSetNthCard(Action, 0, Ac), Ac = spotIt, spotIt(Gin, Action, Gout), !.
 
@@ -182,7 +182,7 @@ null([NumP, ListP, GameMode, Seed, Status, [C1,C2|CS], GameArea], [NumP, ListP, 
 % Predicado que ejecuta la acción pass
 pass([NumP, ListP, GameMode, Seed, Status, CS, [C1,C2|GameArea]], [NumP, ListP, GameMode, Seed, Status, [C1,C2|CS], GameArea]):- largeList([C1,C2|GameArea], R), R == 2.
 % Predicado que ejecuta la acción finish
-finish([NumP, ListP, GameMode, Seed, _, CS, GameArea], [NumP, ListP, GameMode, Seed, 'Terminado', CS, GameArea], R):- allScore(ListP, '', R).
+finish([NumP, ListP, GameMode, Seed, _, CS, GameArea], [NumP, ListP, GameMode, Seed, 'Terminado', CS, GameArea]).
 % Predicado que ejecuta la acción spotIt
 spotIt([NumP, [P1|Ps], GameMode, Seed, Status, CS, [C1,C2|GameArea]], Action,[NumP, ListP, GameMode, Seed, Status, CS, [GameArea]]):-
   cardsSetNthCard(Action, 2, Element), intersection(C1, C2, C3), [Element] == C3, appendPoint(P1, C1, C2, P2), append(Ps, P2, ListP).
@@ -211,3 +211,81 @@ playerToString([P|Ps], Num, Cadena, Str):- number_string(Num, NumStr), cardsSetN
 cardsToString([], Cadena, R):- string_concat(Cadena, '\n', R), !.
 cardsToString([X|Xs], Cadena, CardStr):- string_concat(Cadena, '[', R1), atomic_list_concat(X, ',', R2),
  string_concat(R1, R2, R3), string_concat(R3,'] ', R4), cardsToString(Xs, R4, CardStr).
+
+ /*______________________________________________________________________________________________________
+  _____       _   _____   __  __   ____    _        ___    ____  
+ | ____|     | | | ____| |  \/  | |  _ \  | |      / _ \  / ___| 
+ |  _|    _  | | |  _|   | |\/| | | |_) | | |     | | | | \___ \ 
+ | |___  | |_| | | |___  | |  | | |  __/  | |___  | |_| |  ___) |
+ |_____|  \___/  |_____| |_|  |_| |_|     |_____|  \___/  |____/ 
+_________________________________________________________________________________________________________*/
+
+% --------------------------------Ejemplos Predicado cardsSet------------------------------------------------
+
+% cardsSet([1,2,3,4,5,6,7], 3, R, 5, CS).
+% cardsSet([1,2,3,4,5,6,7], 3, 6, 5, CS).
+% cardsSet([1,2,3,4,5,6,7,8,9,10,11,12,13,14], 4, 13, 5, CS).
+
+% --------------------------------Ejemplos Predicado cardsSetIsDobble----------------------------------------
+
+% cardsSet([1,2,3,4,5,6,7], 3, R, 5, CS), cardsSetIsDobble(CS).
+% cardsSet([1,2,3,4,5,6,7], 3, 6, 5, CS), cardsSetIsDobble(CS).
+% cardsSetIsDobble([[1,2,2], [1,4,5]]).
+
+% --------------------------------Ejemplos Predicado cardsSetNthCard-----------------------------------------
+
+% cardsSet([1,2,3,4,5,6,7], 3, R, 5, CS), cardsSetNthCard(CS, 0, C0).
+% cardsSet([1,2,3,4,5,6,7], 3, 6, 5, CS), cardsSetNthCard(CS, 5, C5).
+% cardsSet([1,2,3,4,5,6,7,8,9,10,11,12,13,14], 4, 13, 5, CS), cardsSetNthCard(CS, 12, CS12).
+
+% --------------------------------Ejemplos Predicado cardsSetFindTotalCards----------------------------------
+
+% cardsSet([1,2,3,4,5,6,7], 3, R, 5, CS), cardsSetNthCard(CS, 0, C0), cardsSetFindTotalCards(C0, R).
+% cardsSet([1,2,3,4,5,6,7], 3, 6, 5, CS), cardsSetNthCard(CS, 5, C5), cardsSetFindTotalCards(C5, R).
+% cardsSet([1,2,3,4,5,6,7,8,9,10,11,12,13,14], 4, 13, 5, CS), cardsSetNthCard(CS, 12, C12), cardsSetFindTotalCards(C12, R).
+
+% --------------------------------Ejemplos Predicado cardsSetToString----------------------------------------
+
+% cardsSet([1,2,3,4,5,6,7], 3, R, 5, CS), cardsSetToString(CS, Str).
+% cardsSet([1,2,3,4,5,6,7], 3, 6, 5, CS), cardsSetToString(CS, Str)
+% cardsSet([1,2,3,4,5,6,7,8,9,10,11,12,13,14], 4, 13, 5, CS), cardsSetToString(CS, Str).
+
+% --------------------------------Ejemplos Predicado dobbleGame--------------------------------------------------
+
+% cardsSet([1,2,3,4,5,6,7], 3, R, 5, CS), dobbleGame(2, CS, stackMode, 5, G).
+% cardsSet([1,2,3,4,5,6,7], 3, 6, 5, CS), dobbleGame(3, CS, stackMode, 32, G).
+% cardsSet([1,2,3,4,5,6,7,8,9,10,11,12,13,14], 4, 13, 5, CS), dobbleGame(2, CS, stackMode, 2, G).
+
+% --------------------------------Ejemplos Predicado dobbleGameRegister--------------------------------------
+
+% cardsSet([1,2,3,4,5,6,7], 3, R, 5, CS), dobbleGame(2, CS, stackMode, 5, G), dobbleGameRegister("Roberto", G, G1), dobbleGameRegister("Victor", G1, G2), dobbleGameRegister("Diego", G2, G3).
+% cardsSet([1,2,3,4,5,6,7], 3, 6, 5, CS), dobbleGame(3, CS, stackMode, 32, G), dobbleGameRegister("Roberto", G, G1), dobbleGameRegister("Victor", G1, G2), dobbleGameRegister("Diego", G2, G3).
+% cardsSet([1,2,3,4,5,6,7,8,9,10,11,12,13,14], 4, 13, 5, CS), dobbleGame(2, CS, stackMode, 2, G), dobbleGameRegister("Roberto", G, G1), dobbleGameRegister("Victor", G1, G2).
+
+% --------------------------------Ejemplos Predicado dobbleGameWhoseTurnIsIt---------------------------------
+% cardsSet([1,2,3,4,5,6,7], 3, R, 5, CS), dobbleGame(2, CS, stackMode, 5, G), dobbleGameRegister("Roberto", G, G1), dobbleGameRegister("Victor", G1, G2), dobbleGameWhoseTurnIsIt(G2, User).
+% cardsSet([1,2,3,4,5,6,7], 3, 6, 5, CS), dobbleGame(3, CS, stackMode, 32, G), dobbleGameRegister("Roberto", G, G1), dobbleGameRegister("Victor", G1, G2), dobbleGameRegister("Diego", G2, G3), dobbleGameWhoseTurnIsIt(G3, User).
+% cardsSet([1,2,3,4,5,6,7,8,9,10,11,12,13,14], 4, 13, 5, CS), dobbleGame(2, CS, stackMode, 2, G), dobbleGameRegister("Roberto", G, G1), dobbleGameRegister("Victor", G1, G2), dobbleGameWhoseTurnIsIt(G2, User).
+
+% --------------------------------Ejemplos Predicado dobbleGamePlay------------------------------------------
+
+% cardsSet([1,2,3,4,5,6,7], 3, R, 5, CS), dobbleGame(2, CS, stackMode, 5, G), dobbleGameRegister("Roberto", G, G1), dobbleGameRegister("Victor", G1, G2).
+% cardsSet([1,2,3,4,5,6,7], 3, 6, 5, CS), dobbleGame(3, CS, stackMode, 32, G), dobbleGameRegister("Roberto", G, G1), dobbleGameRegister("Victor", G1, G2), dobbleGameRegister("Diego", G2, G3),dobbleGamePlay(G3, null, G4), dobbleGamePlay(G4, [spotIt, "Diego", 1], G5).
+% cardsSet([1,2,3,4,5,6,7,8,9,10,11,12,13,14], 4, 13, 5, CS), dobbleGame(2, CS, stackMode, 2, G), dobbleGameRegister("Roberto", G, G1), dobbleGameRegister("Victor", G1, G2), dobbleGamePlay(G2, null, G3), dobbleGamePlay(G3, [finish], G4).
+
+% --------------------------------Ejemplos Predicado dobbleGameStatus----------------------------------------
+
+% cardsSet([1,2,3,4,5,6,7,8,9,10,11,12,13,14], 4, 13, 5, CS), dobbleGame(2, CS, stackMode, 2, G), dobbleGameRegister("Roberto", G, G1), dobbleGameRegister("Victor", G1, G2), dobbleGamePlay(G2, null, G3), dobbleGamePlay(G3, [finish], G4), dobbleGameStatus(G4, Status).
+% cardsSet([1,2,3,4,5,6,7,8,9,10,11,12,13,14], 4, 13, 5, CS), dobbleGame(2, CS, stackMode, 2, G), dobbleGameStatus(G, Status).
+% cardsSet([1,2,3,4,5,6,7,8,9,10,11,12,13,14], 4, 13, 5, CS), dobbleGame(2, CS, stackMode, 2, G), dobbleGameRegister("Roberto", G, G1), dobbleGameRegister("Victor", G1, G2), dobbleGameStatus(G2, Status).
+
+
+% --------------------------------Ejemplos Predicado dobbleGamePlay------------------------------------------
+% cardsSet([1,2,3,4,5,6,7], 3, R, 5, CS), dobbleGame(2, CS, stackMode, 5, G), dobbleGameRegister("Roberto", G, G1), dobbleGameRegister("Victor", G1, G2), dobbleGamePlay(G2, null, G3), dobbleGamePlay(G3, [spotIt, "Roberto", 1], G4).
+% Otros ejemplos en el informe
+
+% --------------------------------Ejemplos Predicado dobbleGameScore------------------------------------------
+
+% cardsSet([1,2,3,4,5,6,7], 3, R, 5, CS), dobbleGame(2, CS, stackMode, 5, G), dobbleGameRegister("Roberto", G, G1), dobbleGameRegister("Victor", G1, G2), dobbleGamePlay(G2, null, G3), dobbleGamePlay(G3, [spotIt, "Roberto", 1], G4), dobbleGameScore(G4, "Roberto", Score).
+
+% cardsSet([1,2,3,4,5,6,7], 3, R, 5, CS), dobbleGame(2, CS, stackMode, 5, G), dobbleGameRegister("Roberto", G, G1), dobbleGameRegister("Victor", G1, G2), dobbleGamePlay(G2, null, G3), dobbleGamePlay(G3, [spotIt, "Roberto", 1], G4), dobbleGameToString(G4, Str).
